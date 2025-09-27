@@ -1,0 +1,11 @@
+node_modules
+.env
+*.log
+dist
+apps/web/dist
+apps/server/build
+apps/server/node_modules
+apps/web/node_modules
+coverage
+.prisma
+.DS_Store

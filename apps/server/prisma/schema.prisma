@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  derivUserId    String    @unique
+  refreshToken   String?
+  accessToken    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  positions      Position[]
+}
+
+model Position {
+  id           String   @id @default(cuid())
+  contractId   String   @unique
+  symbol       String
+  direction    String
+  stake        Float
+  payout       Float
+  spotPrice    Float
+  openedAt     DateTime @default(now())
+  closedAt     DateTime?
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  category  String
+  message   String
+  context   Json?
+  createdAt DateTime @default(now())
+}
