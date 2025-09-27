@@ -1,0 +1,15 @@
+FROM node:20-alpine AS base
+WORKDIR /app
+ENV DATABASE_URL=postgresql://user:pass@localhost:5432/fluxtrader
+COPY apps/server/package*.json ./
+RUN npm install --production=false
+COPY apps/server ./
+RUN npx prisma generate && npm run build
+
+FROM node:20-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=base /app/build ./build
+COPY --from=base /app/node_modules ./node_modules
+COPY apps/server/package*.json ./
+CMD ["node", "build/index.js"]
